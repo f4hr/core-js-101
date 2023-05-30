@@ -202,8 +202,36 @@ function extractEmails(str) {
  *             '└──────────┘\n'
  *
  */
-function getRectangleString(/* width, height */) {
-  throw new Error('Not implemented');
+function getRectangleString(width, height) {
+  const result = [];
+  for (let i = 0; i < height; i += 1) {
+    const row = [];
+    for (let j = 0; j < width; j += 1) {
+      if (i === 0) { // First row
+        if (j === 0) {
+          row.push('┌');
+        } else if (j === width - 1) {
+          row.push('┐');
+        } else {
+          row.push('─');
+        }
+      } else if (i === height - 1) { // Last row
+        if (j === 0) {
+          row.push('└');
+        } else if (j === width - 1) {
+          row.push('┘');
+        } else {
+          row.push('─');
+        }
+      } else if (j === 0 || j === width - 1) { // First and last column
+        row.push('│');
+      } else {
+        row.push(' ');
+      }
+    }
+    result.push(row.join(''));
+  }
+  return `${result.join('\n')}\n`;
 }
 
 
@@ -223,8 +251,25 @@ function getRectangleString(/* width, height */) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
+function encodeToRot13(str) {
+  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+  function encodeChar(char) {
+    // Check if word char
+    if (/[^A-Za-z]/.test(char)) {
+      return char;
+    }
+
+    const isUpcase = char === char.toUpperCase();
+    const charIdx = ALPHABET.indexOf(char);
+    let encodedIdx = charIdx + 13;
+    if ((isUpcase && encodedIdx > ALPHABET.length / 2 - 1) || encodedIdx > ALPHABET.length - 1) {
+      encodedIdx -= ALPHABET.length / 2;
+    }
+    return ALPHABET[encodedIdx];
+  }
+
+  return str.split('').map(encodeChar).join('');
 }
 
 /**
@@ -269,8 +314,15 @@ function isString(value) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  const DECK = [
+    'A♣', '2♣', '3♣', '4♣', '5♣', '6♣', '7♣', '8♣', '9♣', '10♣', 'J♣', 'Q♣', 'K♣',
+    'A♦', '2♦', '3♦', '4♦', '5♦', '6♦', '7♦', '8♦', '9♦', '10♦', 'J♦', 'Q♦', 'K♦',
+    'A♥', '2♥', '3♥', '4♥', '5♥', '6♥', '7♥', '8♥', '9♥', '10♥', 'J♥', 'Q♥', 'K♥',
+    'A♠', '2♠', '3♠', '4♠', '5♠', '6♠', '7♠', '8♠', '9♠', '10♠', 'J♠', 'Q♠', 'K♠',
+  ];
+
+  return DECK.indexOf(value);
 }
 
 
